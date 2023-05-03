@@ -27,7 +27,7 @@ class SkinApi(APIView):
             serializer.save()
 
             # Load the pre-trained model
-            model_path = 'static/my_model.h5'
+            model_path = 'skin_cancer.h5'
             model = load_model(model_path)
 
             # Get the last uploaded image from the database
@@ -37,9 +37,11 @@ class SkinApi(APIView):
             # This could involve resizing, normalization, etc.
             processed_image = process_image(last_obj.image.path)
             predictions = model.predict(processed_image)
-            predicted_class_index = np.argmax(predictions[0])
-            predicted_class = class_labels[predicted_class_index]
-
+            # predicted_class_index = np.argmax(predictions[0])
+            if y_hat < 0.5:
+                predicted_class = class_labels[0]
+            else:
+                predicted_class = class_labels[1]
             # Update the class label of the last object
             last_obj.classes = predicted_class
             last_obj.save()
