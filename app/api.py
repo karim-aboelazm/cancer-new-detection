@@ -12,7 +12,7 @@ import numpy as np
 class_labels = ['benign','malignant']
 
 def process_image(image_file):
-    img = image.load_img(image_file, target_size=(200,200))
+    img = image.load_img(image_file, target_size=(256,256))
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = x / 255.0
@@ -38,7 +38,7 @@ class SkinApi(APIView):
             processed_image = process_image(last_obj.image.path)
             predictions = model.predict(processed_image)
             # predicted_class_index = np.argmax(predictions[0])
-            if y_hat < 0.5:
+            if predictions < 0.5:
                 predicted_class = class_labels[0]
             else:
                 predicted_class = class_labels[1]
